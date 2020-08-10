@@ -12,14 +12,9 @@ RUN apk add --no-cache --virtual .build-deps \
     && cd firmatic \
     && ./gradlew build
 
-FROM alpine:3.12
+FROM alpine:3.12 as prod
 
 LABEL maintainer="Carlos Remuzzi carlosremuzzi@gmail.com"
-
-COPY entrypoint.sh /usr/local/bin/entrypoint
-COPY --from=builder /firmatic/build/libs/ /usr/lib/firmatic
-
-WORKDIR /usr/lib/firmatic
 
 RUN apk add --no-cache \
         ccid \
@@ -32,8 +27,13 @@ RUN apk add --no-cache \
     && mkdir -p /run/pcscd \
     && chown -R firmatic:firmatic /run/pcscd
 
+COPY entrypoint.sh /usr/local/bin/entrypoint
+COPY --from=builder /firmatic/build/libs/ /usr/lib/firmatic
+
+WORKDIR /home/firmatic
+
 USER firmatic
 
 ENTRYPOINT ["entrypoint"]
 
-CMD ["java","-jar","firmador-servidor.jar"]
+CMD ["java","-jar","/usr/lib/firmatic/firmador-servidor.jar"]
