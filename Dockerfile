@@ -2,7 +2,7 @@ FROM openjdk:8-jdk-alpine3.9 as builder
 
 LABEL maintainer="Carlos Remuzzi carlosremuzzi@gmail.com"
 
-COPY --from=api-compiler /jacobitus ./
+ARG GITLAB_SHA=a3657070
 
 RUN apk add --no-cache --virtual .build-deps \
         curl \
