@@ -6,28 +6,11 @@ ARG GITLAB_SHA=a3657070
 
 RUN apk add --no-cache --virtual .build-deps \
         curl \
-        maven \
-    && curl -fsL https://gitlab.softwarelibre.gob.bo/api/v4/projects/64/repository/archive.tar.gz\?sha\=$GITLAB_SHA -o jacobitus.tar.gz \
-    && tar -xf jacobitus.tar.gz \
-    && mv jacobitus-$GITLAB_SHA-* jacobitus \
-    && sed -i 's~/usr/lib/ePass2003-Linux-x64/redist/libcastle.so.1.0.0~/usr/lib/pkcs11/opensc-pkcs11.so~g' /jacobitus/source/FidoMonitor/drivers.json \
-    && sed -i 's~/usr/lib/ePass2003-Linux-x64/redist/libcastle.so.1.0.0~/usr/lib/pkcs11/opensc-pkcs11.so~g' /jacobitus/instaladores/linux/files_agencia/fido_files/drivers.json \
-    && cd /jacobitus/source/FidoModuleAbstract \
-    && mvn clean install \
-    && cd /jacobitus/source/Fido \
-    && mvn clean install \
-    && cd /jacobitus/source/FidoMonitor \
-    && mvn clean install \
-    && mkdir -p /usr/Fido-build \
-    && cd /usr/Fido-build \
-    && cp /jacobitus/source/Fido/application.properties application.properties \
-    && cp /jacobitus/source/Fido/firmadigital_bo.pem firmadigital_bo.pem \
-    && cp /jacobitus/source/Fido/target/fido.jar fido.jar \
-    && cp /jacobitus/source/FidoMonitor/drivers.json drivers.json \
-    && cp /jacobitus/source/FidoMonitor/fido.properties fido.properties \
-    && cp /jacobitus/source/FidoMonitor/perfiles_certificado.json perfiles_certificado.json \
-    && cp /jacobitus/source/FidoMonitor/target/monitor.jar monitor.jar \
-    && cp -r /jacobitus/source/Fido/apidoc/ apidoc/
+    && curl -fsL https://gitlab.softwarelibre.gob.bo/api/v4/projects/369/repository/archive.tar.gz\?sha\=$GITLAB_SHA -o firmatic.tar.gz \
+    && tar -xf firmatic.tar.gz \
+    && mv agetic-dss-firmador-servidor-* firmatic \
+    && cd firmatic \
+    && ./gradlew build
 
 FROM alpine:3.12
 
