@@ -36,4 +36,4 @@ USER firmatic
 
 ENTRYPOINT ["entrypoint"]
 
-CMD ["java","-jar","monitor.jar"]
+CMD ["java","-jar","firmador-servidor.jar"]
