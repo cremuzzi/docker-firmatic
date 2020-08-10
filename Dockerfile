@@ -17,9 +17,9 @@ FROM alpine:3.12
 LABEL maintainer="Carlos Remuzzi carlosremuzzi@gmail.com"
 
 COPY entrypoint.sh /usr/local/bin/entrypoint
-COPY --from=builder /usr/Fido-build /usr/lib/fido
+COPY --from=builder /firmatic/build/libs/ /usr/lib/firmatic
 
-WORKDIR /usr/lib/fido
+WORKDIR /usr/lib/firmatic
 
 RUN apk add --no-cache \
         ccid \
