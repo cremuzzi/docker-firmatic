@@ -1,8 +1,6 @@
 FROM openjdk:8-jdk-alpine3.9 as builder
 
-ARG GITLAB_SHA=f93e3932
-
-WORKDIR /jacobitus
+LABEL maintainer="Carlos Remuzzi carlosremuzzi@gmail.com"
 
 COPY --from=api-compiler /jacobitus ./
 
