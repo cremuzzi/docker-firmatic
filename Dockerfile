@@ -1,24 +1,17 @@
-FROM node:14.2.0-alpine3.11 as api-compiler
+FROM openjdk:8-jdk-alpine3.9 as builder
 
 ARG GITLAB_SHA=f93e3932
-
-RUN apk add --no-cache \
-        curl \
-    && npm -g config set user root \
-    && npm -g install apidoc \
-    && curl -fsL https://gitlab.softwarelibre.gob.bo/api/v4/projects/64/repository/archive.tar.gz\?sha\=$GITLAB_SHA -o jacobitus.tar.gz \
-    && tar -xf jacobitus.tar.gz \
-    && mv jacobitus-$GITLAB_SHA-* jacobitus \
-    && apidoc -i /jacobitus/source/Fido/src/main/java/gob/adsib/fido/server/end_points/ -o /jacobitus/source/Fido/apidoc/
-
-FROM openjdk:8-jdk-alpine3.9 as builder
 
 WORKDIR /jacobitus
 
 COPY --from=api-compiler /jacobitus ./
 
 RUN apk add --no-cache --virtual .build-deps \
+        curl \
         maven \
+    && curl -fsL https://gitlab.softwarelibre.gob.bo/api/v4/projects/64/repository/archive.tar.gz\?sha\=$GITLAB_SHA -o jacobitus.tar.gz \
+    && tar -xf jacobitus.tar.gz \
+    && mv jacobitus-$GITLAB_SHA-* jacobitus \
     && sed -i 's~/usr/lib/ePass2003-Linux-x64/redist/libcastle.so.1.0.0~/usr/lib/pkcs11/opensc-pkcs11.so~g' /jacobitus/source/FidoMonitor/drivers.json \
     && sed -i 's~/usr/lib/ePass2003-Linux-x64/redist/libcastle.so.1.0.0~/usr/lib/pkcs11/opensc-pkcs11.so~g' /jacobitus/instaladores/linux/files_agencia/fido_files/drivers.json \
     && cd /jacobitus/source/FidoModuleAbstract \
